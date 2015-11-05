@@ -1,5 +1,6 @@
 package tictactoe;
 
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,6 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 //reference: http://forum.codecall.net/topic/36472-javatutorial-tic-tac-toe/
+//reference: http://forum.codecall.net/topic/43209-java-source-code-tic-tac-toe-game/
 public class TicTacToe implements ActionListener{
 	
 	// Instance Variables
@@ -23,8 +25,10 @@ public class TicTacToe implements ActionListener{
 	private boolean win = false;
 	
 	public static void main(String[] args){
-		new TicTacToe();
+		new Menu();
+		//new TicTacToe();
 	}
+	
 	
 	public TicTacToe(){
 		//create window
@@ -66,7 +70,7 @@ public class TicTacToe implements ActionListener{
 			System.exit(0);
 		}
 		else if (count == 9 && win == false){
-			JOptionPane.showMessageDialog(null, "TIE GAME!");
+			JOptionPane.showMessageDialog(null, "NOBODY WIN!");
 			System.exit(0);
 		}
 	}
