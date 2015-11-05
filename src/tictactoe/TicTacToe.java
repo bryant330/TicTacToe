@@ -25,12 +25,22 @@ public class TicTacToe implements ActionListener{
 	private boolean win = false;
 	
 	public static void main(String[] args){
-		new Menu();
+		new MainMenuPanel();
 		//new TicTacToe();
 	}
 	
+	public void setupOptionPane() {
+		Object[] options = { "Player 1 (X)", "Player 2 (O)" };
+		count = JOptionPane.showOptionDialog(window,
+				"Who will start first?", "Please choose",
+				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+				options, null); //player1 = 0, player2 = 1
+		System.out.println(count);
+	}
 	
 	public TicTacToe(){
+		//choose who to start first
+		setupOptionPane();
 		//create window
 		window.setSize(300, 300);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
