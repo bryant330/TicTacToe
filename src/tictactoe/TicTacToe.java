@@ -21,7 +21,9 @@ public class TicTacToe implements ActionListener{
 	};
 	private JButton buttons[] = new JButton[9];
 	private String letter = "";
+	private String player = "";
 	private int count = 0;
+	private int choice = 0;
 	private boolean win = false;
 	
 	public static void main(String[] args){
@@ -31,11 +33,11 @@ public class TicTacToe implements ActionListener{
 	
 	public void setupOptionPane() {
 		Object[] options = { "Player 1 (X)", "Player 2 (O)" };
-		count = JOptionPane.showOptionDialog(window,
+		choice = JOptionPane.showOptionDialog(window,
 				"Who will start first?", "Please choose",
 				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
 				options, null); //player1 = 0, player2 = 1
-		System.out.println(count);
+		System.out.println(choice);
 	}
 	
 	public TicTacToe(){
@@ -58,10 +60,21 @@ public class TicTacToe implements ActionListener{
 	}
 	
 	public String getTurn(){
-		if (count %2 != 0)
-			return "X";
+		if (choice == 0){
+			if (count %2 != 0)
+				return "X";
+			else
+				return "O";
+		}
+		else if (choice == 1){
+			if (count %2 != 0)
+				return "O";
+			else
+				return "X";
+		}
 		else
-			return "O";
+			return "";
+		
 	}
 	
 	public void checkWinner(){
@@ -76,7 +89,12 @@ public class TicTacToe implements ActionListener{
 		}
 		
 		if (win == true){
-			JOptionPane.showMessageDialog(null, letter + " WON!");
+			if(letter == "X")
+				player = "Player 1";
+			else if (letter == "O")
+				player = "Player 2";
+				
+			JOptionPane.showMessageDialog(null, player + " WON!");
 			System.exit(0);
 		}
 		else if (count == 9 && win == false){
