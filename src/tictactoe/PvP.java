@@ -1,6 +1,5 @@
 package tictactoe;
 
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,7 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 //reference: http://forum.codecall.net/topic/36472-javatutorial-tic-tac-toe/
 //reference: http://forum.codecall.net/topic/43209-java-source-code-tic-tac-toe-game/
-public class TicTacToe implements ActionListener{
+public class PvP implements ActionListener{
 	
 	// Instance Variables
 	private JFrame window = new JFrame("Tic-Tac-Toe");
@@ -28,7 +27,6 @@ public class TicTacToe implements ActionListener{
 	
 	public static void main(String[] args){
 		new MainMenuPanel();
-		//new TicTacToe();
 	}
 	
 	public void setupOptionPane() {
@@ -40,7 +38,7 @@ public class TicTacToe implements ActionListener{
 		System.out.println(choice);
 	}
 	
-	public TicTacToe(){
+	public PvP(){
 		//choose who to start first
 		setupOptionPane();
 		//create window
@@ -53,6 +51,7 @@ public class TicTacToe implements ActionListener{
 			buttons[i]= new JButton();
 			window.add(buttons[i]);
 			buttons[i].addActionListener(this);
+			buttons[i].setFocusable(false);
 		}
 		
 		//show the window
@@ -93,12 +92,11 @@ public class TicTacToe implements ActionListener{
 				player = "Player 1";
 			else if (letter == "O")
 				player = "Player 2";
-				
 			JOptionPane.showMessageDialog(null, player + " WON!");
 			System.exit(0);
 		}
 		else if (count == 9 && win == false){
-			JOptionPane.showMessageDialog(null, "NOBODY WIN!");
+			JOptionPane.showMessageDialog(null, "DRAW!");
 			System.exit(0);
 		}
 	}

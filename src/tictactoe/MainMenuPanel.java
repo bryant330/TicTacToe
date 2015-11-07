@@ -40,7 +40,11 @@ public class MainMenuPanel extends JFrame implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent a) {
 		if (a.getSource() == btn1)
-			new TicTacToe();
+			new PvP();
+		else if (a.getSource() == btn2)
+			new PvC();
+		else if (a.getSource() == btn3)
+			;
 		
 	}
 	
