@@ -88,7 +88,7 @@ public class CPU {
 				&& btn5.getText().equals(""))
 			return 5;
 
-		else if (btn1.getText().equals("X") && btn2.getText().equals("X")
+		/*else if (btn1.getText().equals("X") && btn2.getText().equals("X")
 				&& btn3.getText().equals(""))
 			return 3;
 		else if (btn4.getText().equals("X") && btn5.getText().equals("X")
@@ -174,7 +174,7 @@ public class CPU {
 
 		else if (btn3.getText().equals("X") && btn5.getText().equals("O")
 				&& btn7.getText().equals("X"))
-			return 4;
+			return 4;*/
 
 		else if (btn5.getText().equals(""))
 			return 5;
@@ -182,7 +182,7 @@ public class CPU {
 		else if (btn1.getText().equals(""))
 			return 1;
 		else
-			return 0;
+			return 1;
 	}
 
 	public static boolean doRandomMove(JButton button) {

@@ -1,5 +1,6 @@
 package tictactoe;
 
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,7 +14,7 @@ public class PvP implements ActionListener{
 	
 	// Instance Variables
 	private JFrame window = new JFrame("Tic-Tac-Toe");
-	private int[][] winCombinations = new int [][]{   //2D arrays: int[7][3]
+	private int[][] winCombinations = new int [][]{   //2D arrays: int[7][3]= 7{}, each {} got 3 elements
 			{0, 1, 2}, {3, 4, 5}, {6, 7, 8},  // horizontal
 			{0, 3, 6}, {1, 4, 7}, {2, 5, 8},  // vertical
 			{0, 4, 8}, {2, 4, 6}  			  // diagonal
@@ -52,6 +53,7 @@ public class PvP implements ActionListener{
 			window.add(buttons[i]);
 			buttons[i].addActionListener(this);
 			buttons[i].setFocusable(false);
+			buttons[i].setFont(new Font(null,Font.PLAIN,100));
 		}
 		
 		//show the window
