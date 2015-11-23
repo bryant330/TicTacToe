@@ -4,6 +4,8 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.Scanner;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -20,15 +22,16 @@ public class PvC implements ActionListener {
 			{ 0, 3, 6 }, { 1, 4, 7 }, { 2, 5, 8 }, // vertical
 			{ 0, 4, 8 }, { 2, 4, 6 } // diagonal
 	};
-	private JButton buttons[] = new JButton[9];
+	//private JButton buttons[] = new JButton[9];
 	private JButton button[][] = new JButton[3][3];
 	private String letter = "";
 	private int count = 0;
 	private int choice = 0;
 	private boolean win = false;
-	private int buttonNum = 0;
+	private int buttonNum = -1;
 	private int[][] board = new int[3][3];
 	private boolean playAgain = true;
+	private boolean userSelect = false;
 	
 	public PvC() {
 
@@ -47,6 +50,7 @@ public class PvC implements ActionListener {
 			buttons[i].setFocusable(false);
 			buttons[i].setFont(new Font(null,Font.PLAIN,100));
 		}*/
+		
 		//add buttons to window in another way
 		for(int i = 0; i < 3; i++){
 			for(int j = 0; j < 3; j++){
@@ -61,10 +65,10 @@ public class PvC implements ActionListener {
 		// show the window
 		window.setVisible(true);
 		
-		/*while(playAgain){
+		while(playAgain){
 			gameLoop();
 			playAgain = false;
-		}*/
+		}
 		
 	}
 	
@@ -79,24 +83,45 @@ public class PvC implements ActionListener {
 	}
 	
 	public void gameLoop() {
-		checkWinner();
 		int[][] board = reset();
 		int turn = 1;
 		int AI;
+		if (choice == 1)
+			AI = 1;
+		else
+			AI = 0;
+		while((!checkWin(board,0))&&((!checkWin(board,1)) || (!checkDraw(board,0))) && (!checkDraw(board,1)) && (!isFull(board))){
 			int pos = -1;
-			
 			// if computer start first
-			if (choice == 1) {
-				AI = 1;
+			if (turn == AI) {
+				//AI = 1;
 				pos = minimax(board, AI);
-				System.out.println("pos is " + pos);
-				buttons[pos-1].setText("O");
-				buttons[pos-1].setEnabled(false);
-				count++;
+				System.out.println("AI");
 			}
 			else{
-				System.out.println("player start 1st");
+				System.out.println("waiting for player to choose");
+				//call actionperformed
+				//pos = buttonNum +1;
+				pos = minimax(board,turn); //take the user input
+				System.out.println("not AI");
+				//pos = humanPlay(board);
 			}
+			
+			int i = (pos-1)/3;
+			int j = ((pos-1) % 3);
+			board[i][j] = turn;
+			if (turn == 1){
+				button[i][j].setText("O");
+				button[i][j].setEnabled(false);
+			}
+			else {
+				button[i][j].setText("X");
+				button[i][j].setEnabled(false);
+			}
+			turn = getOpponent(turn);
+			System.out.println("turn is " + turn + " now");
+		}
+		
 		
 			
 
@@ -111,19 +136,8 @@ public class PvC implements ActionListener {
 			
 	}
 	
-	public void AI(){
-		int computerButton;
-		if (count <=9){
-			//computerButton = maxMove();
-			computerButton = CPU.doMove(buttons[0], buttons[1], buttons[2], buttons[3], buttons[4], buttons[5], buttons[6], buttons[7], buttons[8]) - 1;
-			buttons[computerButton].setText("O");
-			buttons[computerButton].setEnabled(false);
-			count++;
-			System.out.println("this is computer move, this is the " + count +" button");
-			}
-	}
 	
-	public boolean checkWin(){
+	/*public boolean checkWin(){
 		for(int i=0; i<=7; i++){
 			if (buttons[winCombinations[i][0]].getText().equals(
 					buttons[winCombinations[i][1]].getText())
@@ -133,7 +147,7 @@ public class PvC implements ActionListener {
 				return true;
 			}
 		return false;
-	}
+	}*/
 	
 	public void checkWinner(){
 		if (win == true){
@@ -160,15 +174,54 @@ public class PvC implements ActionListener {
 		for(int i = 0; i < 3; i++){
 			for(int j = 0; j < 3; j++){
 				if(a.getSource() == button[i][j]){
-					System.out.println("button location is [" + i +"][" + j + "]");
+					buttonNum = getUserInput(i,j);
 				}
 			}
 		}
-		count++;
+	}
+	
+	public boolean isFull(int[][] board) {
+		for(int i = 0; i < 3; i++){
+			for(int j = 0; j < 3; j++){
+				if(board[i][j] == -1)
+					return false;
+			}
+		}
+		return true;
+	}
+	
+	public void callUserInput() {
+		System.out.println("Press any key to continue...");
+        try {
+			System.in.read();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		
-		//AI();
-		//checkWinner();
+	}
+	
+	public int getUserInput(int i, int j) {
+		if (i == 0 && j == 0)
+			return 0;
+		else if (i == 0 && j == 1)
+			return 1;
+		else if (i == 0 && j == 2)
+			return 2;
+		else if (i == 1 && j == 0)
+			return 3;
+		else if (i == 1 && j == 1)
+			return 4;
+		else if (i == 1 && j == 2)
+			return 5;
+		else if (i == 2 && j == 0)
+			return 6;
+		else if (i == 2 && j == 1)
+			return 7;
+		else if (i == 2 && j == 2)
+			return 8;
+		else
+			return -1;
 	}
 	
 	public int minimax(int board[][], int piece) {
@@ -282,9 +335,11 @@ public class PvC implements ActionListener {
 	
 	public boolean checkWin(int[][] board, int AI) {
 		for(int i = 0; i<board.length;i++) {
+			//horizontal
 			if((board[i][0] == AI) && (board[i][1] == AI) && (board[i][2] == AI)){
 				return true;
 			}
+			//vertical
 			if((board[0][i] == AI) && (board[1][i] == AI) &&(board[2][i] == AI)){
 				return true;
 			}
@@ -301,13 +356,33 @@ public class PvC implements ActionListener {
 		return false;
 	}
 	
+	public boolean checkDraw(int[][] board, int AI) {
+		int opp = getOpponent(AI);
+		//board length is 3
+		for (int i = 0; i < board.length; i++) {
+			if(((board[i][0]!=opp) && (board[i][1]!=opp) && (board[i][2]!=opp)) && ((board[i][0]!=opp) || (board[i][1]!=opp) || (board[i][2]!=opp))){
+				return false;
+			}
+			if(((board[0][i]!=opp) && (board[1][i]!=opp) && (board[2][i]!=opp)) && ((board[0][i]!=opp) || (board[1][i]!=opp) || (board[2][i]!=opp))){
+				return false;
+			}
+		}
+		if(((board[0][0]!=opp) && (board[1][1]!=opp) && (board[2][2]!=opp)) && ((board[0][0]!=opp) || (board[1][1]!=opp) || (board[2][2]!=opp))){
+			return false;
+		}
+		if(((board[0][2]!=opp) && (board[1][1]!=opp) && (board[2][0]!=opp)) && ((board[0][2]!=opp) || (board[1][1]!=opp) || (board[2][0]!=opp))){
+			return false;
+		}
+		return true;
+	}
+	
 	public boolean gameOver(int[][] board) {
 		if(checkWin(board,1))
 			return true;
 		if(checkWin(board,0))
 			return true;
-		//if((checkDraw(board,1)) && (checkDraw(board,0)))
-			//return true;
+		if((checkDraw(board,1)) && (checkDraw(board,0)))
+			return true;
 		
 		return false;
 	}
