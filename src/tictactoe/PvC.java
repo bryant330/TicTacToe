@@ -5,6 +5,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.Random;
 import java.util.Scanner;
 
 import javax.swing.JButton;
@@ -92,11 +93,18 @@ public class PvC implements ActionListener {
 			AI = 0;
 		while((!checkWin(board,0))&&((!checkWin(board,1)) || (!checkDraw(board,0))) && (!checkDraw(board,1)) && (!isFull(board))){
 			int pos = -1;
+			
 			// if computer start first
 			if (turn == AI) {
-				//AI = 1;
-				pos = minimax(board, AI);
+				if(count == 0){
+					Random r = new Random();
+					pos = r.nextInt(9) + 1;
+					System.out.println("pos is " + pos + " first");
+				}
+				else
+					pos = minimax(board, AI);
 				System.out.println("AI");
+				count++;
 			}
 			else{
 				System.out.println("waiting for player to choose");
