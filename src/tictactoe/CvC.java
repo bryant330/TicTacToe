@@ -6,15 +6,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Random;
-import java.util.Scanner;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-// reference: http://thanhcs.blogspot.my/2015/06/java-share-soure-code-game-tictactoe.html
-// reference: http://algojava.blogspot.my/2012/05/tic-tac-toe-game-swingjava.html
-public class PvC implements ActionListener {
+public class CvC implements ActionListener {
+
 
 	// Instance Variables
 	private JFrame window = new JFrame("Tic-Tac-Toe");
@@ -35,7 +33,7 @@ public class PvC implements ActionListener {
 	private boolean playAgain = true;
 	private boolean userSelect = false;
 	
-	public PvC() {
+	public CvC() {
 
 		// choose who to start first
 		setupOptionPane();
@@ -89,57 +87,62 @@ public class PvC implements ActionListener {
 		int[][] board = reset();
 		int turn = 1;
 		int AI;
-		if (choice == 1)
+		if (choice == 1) //computer 2 will start first
 			AI = 1;
-		else
+		else {
 			AI = 0;
-		while((!checkWin(board,0))&&((!checkWin(board,1)) || (!checkDraw(board,0))) && (!checkDraw(board,1)) && (!isFull(board))){
+		}
 			
-			
-			// if computer start first
+		while(count <= 9){
+			//(!checkWin(board,0))&&((!checkWin(board,1)) || (!checkDraw(board,0))) && (!checkDraw(board,1)) && (!isFull(board))
 			if (turn == AI) {
+				System.out.println("computer 2(O)'s turn, turn is " + turn +"(1) now");
 				if(count == 0){
 					Random r = new Random();
 					pos = r.nextInt(9) + 1;
 				}
-				else
+				else{
 					pos = minimax(board, AI);
+				}
+				System.out.println("pos is " + pos);
 				count++;
-				
-				int i = (pos-1)/3;
-				int j = ((pos-1) % 3);
-				board[i][j] = turn;
-				buttons[i][j].addActionListener(this);
-				//buttons[i][j].setText("O");
-				//buttons[i][j].setEnabled(false);
-				
 			}
-			else{
-				System.out.println("waiting for player to choose");
-				//call actionperformed
-				//pos = buttonNum +1;
-				pos = minimax(board,turn); //take the user input
-				//int i = (pos-1)/3;
-				//int j = ((pos-1) % 3);
-				//board[i][j] = turn;
-				//buttons[i][j].setText("X");
-				//buttons[i][j].setEnabled(false);
+			else{		
+				System.out.println("computer 1(X)'s turn, turn is " + turn +"(0) now");
+				//turn = 0;
+				//if (count == 0){
+				//	Random r = new Random();
+					//pos = r.nextInt(9) + 1;
+				//	pos = 2;
+				//}
+				//else {
+					pos = minimax(board,turn);
+				//}
+				System.out.println("pos is " + pos);
+				count++;
 			}
 			
+			int i = (pos-1) / 3;
+			int j = (pos-1) % 3;
+			//System.out.println("fill the number in [" + i +"][" + j +"]");
+			board[i][j] = turn;
+			if (turn == 1) {
+				buttons[i][j].setText("O");
+				buttons[i][j].setEnabled(false);
+			}
+			else {
+				buttons[i][j].setText("X");
+				buttons[i][j].setEnabled(false);
+			}
 			turn = getOpponent(turn);
-		}
-		
-		
-			
-
-	
+		}	
 	}
 
 	public void setupOptionPane() {
-		Object[] options = { "Player(X)", "Computer(O)" };
+		Object[] options = { "Computer 1(X)", "Computer 2(O)" };
 		choice = JOptionPane.showOptionDialog(window, "Who will start first?",
 				"Please choose", JOptionPane.YES_NO_OPTION,
-				JOptionPane.QUESTION_MESSAGE, null, options, null); // player = 0, computer = 1
+				JOptionPane.QUESTION_MESSAGE, null, options, null); // computer 1 = 0, computer 2 = 1
 			
 	}
 	
@@ -175,16 +178,6 @@ public class PvC implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent a) {
-		JButton pressedButton = (JButton) a.getSource();
-		pressedButton.setText("X");
-		pressedButton.setEnabled(false);
-		for(int i = 0; i < 3; i++){
-			for(int j = 0; j < 3; j++){
-				if(a.getSource() == buttons[i][j]){
-					buttonNum = getUserInput(i,j);
-				}
-			}
-		}
 	}
 	
 	public boolean isFull(int[][] board) {
@@ -197,39 +190,6 @@ public class PvC implements ActionListener {
 		return true;
 	}
 	
-	public void callUserInput() {
-		System.out.println("Press any key to continue...");
-        try {
-			System.in.read();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
-	
-	public int getUserInput(int i, int j) {
-		if (i == 0 && j == 0)
-			return 0;
-		else if (i == 0 && j == 1)
-			return 1;
-		else if (i == 0 && j == 2)
-			return 2;
-		else if (i == 1 && j == 0)
-			return 3;
-		else if (i == 1 && j == 1)
-			return 4;
-		else if (i == 1 && j == 2)
-			return 5;
-		else if (i == 2 && j == 0)
-			return 6;
-		else if (i == 2 && j == 1)
-			return 7;
-		else if (i == 2 && j == 2)
-			return 8;
-		else
-			return -1;
-	}
 	
 	public int minimax(int board[][], int piece) {
 		int bestMove[] = new int[2];
@@ -395,4 +355,6 @@ public class PvC implements ActionListener {
 	}
 	
 	
+
+
 }

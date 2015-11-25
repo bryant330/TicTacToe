@@ -44,7 +44,7 @@ public class MainMenuPanel extends JFrame implements ActionListener{
 		else if (a.getSource() == btn2)
 			new PvC();
 		else if (a.getSource() == btn3)
-			;
+			new CvC();
 		
 	}
 	
