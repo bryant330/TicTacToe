@@ -26,7 +26,7 @@ public class CvC implements ActionListener {
 	private String letter = "";
 	private int count = 0;
 	private int choice = 0;
-	int pos = -1;
+	
 	private boolean win = false;
 	private int buttonNum = -1;
 	private int[][] board = new int[3][3];
@@ -87,62 +87,90 @@ public class CvC implements ActionListener {
 		int[][] board = reset();
 		int turn = 1;
 		int AI;
-		if (choice == 1) //computer 2 will start first
+		int pos = -1;
+		//comp 2 start first
+		if (choice == 1) {
 			AI = 1;
-		else {
-			AI = 0;
-		}
-			
-		while(count <= 9){
-			//(!checkWin(board,0))&&((!checkWin(board,1)) || (!checkDraw(board,0))) && (!checkDraw(board,1)) && (!isFull(board))
-			if (turn == AI) {
-				System.out.println("computer 2(O)'s turn, turn is " + turn +"(1) now");
-				if(count == 0){
-					Random r = new Random();
-					pos = r.nextInt(9) + 1;
+			do {
+				if (turn == AI) {
+					System.out.println("computer 2(O)'s turn, turn is " + turn +"(1) now");
+					if(count == 0){
+						Random r = new Random();
+						pos = r.nextInt(9) + 1;
+					}
+					else{
+						pos = minimax(board, AI);
+					}
+					System.out.println("pos is " + pos);
+					count++;
 				}
 				else{
-					pos = minimax(board, AI);
-				}
-				System.out.println("pos is " + pos);
-				count++;
-			}
-			else{		
-				System.out.println("computer 1(X)'s turn, turn is " + turn +"(0) now");
-				//turn = 0;
-				//if (count == 0){
-				//	Random r = new Random();
-					//pos = r.nextInt(9) + 1;
-				//	pos = 2;
-				//}
-				//else {
+					System.out.println("computer 1(X)'s turn, turn is " + turn +"(0) now");
 					pos = minimax(board,turn);
-				//}
-				System.out.println("pos is " + pos);
-				count++;
-			}
+					System.out.println("pos is " + pos);
+					count++;
+				}
+				
+				int i = (pos-1) / 3;
+				int j = (pos-1) % 3;
+				board[i][j] = turn;
+				if (turn == 1) {
+					buttons[i][j].setText("O");
+					buttons[i][j].setEnabled(false);
+				}
+				else {
+					buttons[i][j].setText("X");
+					buttons[i][j].setEnabled(false);
+				}
+				turn = getOpponent(turn);
 			
-			int i = (pos-1) / 3;
-			int j = (pos-1) % 3;
-			//System.out.println("fill the number in [" + i +"][" + j +"]");
-			board[i][j] = turn;
-			if (turn == 1) {
-				buttons[i][j].setText("O");
-				buttons[i][j].setEnabled(false);
-			}
-			else {
-				buttons[i][j].setText("X");
-				buttons[i][j].setEnabled(false);
-			}
-			turn = getOpponent(turn);
-		}	
+			} while ((!checkWin(board,0))&&((!checkWin(board,1)) || (!checkDraw(board,0))) && (!checkDraw(board,1)) && (!isFull(board)));
+		}
+		//comp 1 start first
+		else {        	 
+			AI = 1;
+			do {
+				if (turn == AI) {
+					System.out.println("computer 1(X)'s turn, turn is " + turn +"(1) now");
+					if(count == 0){
+						Random r = new Random();
+						pos = r.nextInt(9) + 1;
+					}
+					else{
+						pos = minimax(board, AI);
+					}
+					System.out.println("pos is " + pos);
+					count++;
+				}
+				else{
+					System.out.println("computer 2(O)'s turn, turn is " + turn +"(0) now");
+					pos = minimax(board,turn);
+					System.out.println("pos is " + pos);
+					count++;
+				}
+		
+				int i = (pos-1) / 3;
+				int j = (pos-1) % 3;
+				board[i][j] = turn;
+				if (turn == 1) {
+					buttons[i][j].setText("X");
+					buttons[i][j].setEnabled(false);
+				}
+				else {
+					buttons[i][j].setText("O");
+					buttons[i][j].setEnabled(false);
+				}
+				turn = getOpponent(turn);
+			} while ((!checkWin(board,0))&&((!checkWin(board,1)) || (!checkDraw(board,0))) && (!checkDraw(board,1)) && (!isFull(board)));
+		}
+		//checkWinner();
 	}
 
 	public void setupOptionPane() {
 		Object[] options = { "Computer 1(X)", "Computer 2(O)" };
 		choice = JOptionPane.showOptionDialog(window, "Who will start first?",
 				"Please choose", JOptionPane.YES_NO_OPTION,
-				JOptionPane.QUESTION_MESSAGE, null, options, null); // computer 1 = 0, computer 2 = 1
+				JOptionPane.QUESTION_MESSAGE, null, options, null); // computer 1 -> 0, computer 2 -> 1
 			
 	}
 	
@@ -159,21 +187,15 @@ public class CvC implements ActionListener {
 		return false;
 	}*/
 	
-	public void checkWinner(){
-		if (win == true){
-			if(letter == "X"){
-				JOptionPane.showMessageDialog(null,"PLAYER WON!");
-				System.exit(0);
-			}
-			else{
-				JOptionPane.showMessageDialog(null,"COMPUTER WON!");
-				System.exit(0);
-			}
+	public void checkWinner() {
+		if (checkWin(board, 0)) {
+			JOptionPane.showMessageDialog(null, "WON!");
 		}
-		else if (count == 9 && win == false){
-			JOptionPane.showMessageDialog(null, "DRAW!");
-			//System.exit(0);
+		else if (checkWin(board, 1)) {
+			JOptionPane.showMessageDialog(null, "PLAYER WON!");
 		}
+		
+		JOptionPane.showMessageDialog(null, "DRAW!");
 	}
 
 	@Override
