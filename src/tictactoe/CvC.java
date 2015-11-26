@@ -21,17 +21,11 @@ public class CvC implements ActionListener {
 			{ 0, 3, 6 }, { 1, 4, 7 }, { 2, 5, 8 }, // vertical
 			{ 0, 4, 8 }, { 2, 4, 6 } // diagonal
 	};
-	//private JButton buttons[] = new JButton[9];
 	private JButton buttons[][] = new JButton[3][3];
-	private String letter = "";
 	private int count = 0;
 	private int choice = 0;
-	
-	private boolean win = false;
-	private int buttonNum = -1;
 	private int[][] board = new int[3][3];
 	private boolean playAgain = true;
-	private boolean userSelect = false;
 	
 	public CvC() {
 
@@ -42,15 +36,6 @@ public class CvC implements ActionListener {
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setLayout(new GridLayout(3, 3));
 
-		// add buttons to window and action listeners to buttons
-		/*for (int i = 0; i <= 8; i++) {
-			buttons[i] = new JButton();
-			window.add(buttons[i]);
-			buttons[i].addActionListener(this);
-			buttons[i].setFocusable(false);
-			buttons[i].setFont(new Font(null,Font.PLAIN,100));
-		}*/
-		
 		//add buttons to window in another way
 		for(int i = 0; i < 3; i++){
 			for(int j = 0; j < 3; j++){
@@ -163,7 +148,7 @@ public class CvC implements ActionListener {
 				turn = getOpponent(turn);
 			} while ((!checkWin(board,0))&&((!checkWin(board,1)) || (!checkDraw(board,0))) && (!checkDraw(board,1)) && (!isFull(board)));
 		}
-		//checkWinner();
+		checkWinner(board);
 	}
 
 	public void setupOptionPane() {
@@ -187,14 +172,14 @@ public class CvC implements ActionListener {
 		return false;
 	}*/
 	
-	public void checkWinner() {
+	public void checkWinner(int board[][]) {
 		if (checkWin(board, 0)) {
-			JOptionPane.showMessageDialog(null, "WON!");
+			JOptionPane.showMessageDialog(null, "someone WON!");
 		}
 		else if (checkWin(board, 1)) {
-			JOptionPane.showMessageDialog(null, "PLAYER WON!");
+			JOptionPane.showMessageDialog(null, "sometwo WON!");
 		}
-		
+		else
 		JOptionPane.showMessageDialog(null, "DRAW!");
 	}
 
@@ -326,19 +311,23 @@ public class CvC implements ActionListener {
 		for(int i = 0; i<board.length;i++) {
 			//horizontal
 			if((board[i][0] == AI) && (board[i][1] == AI) && (board[i][2] == AI)){
+				//System.out.println("checkwin 1");
 				return true;
 			}
 			//vertical
 			if((board[0][i] == AI) && (board[1][i] == AI) &&(board[2][i] == AI)){
+				//System.out.println("checkwin 2");
 				return true;
 			}
 		}
 		
 		//diagonal
 		if((board[0][0] == AI) && (board[1][1] == AI) && (board[2][2] == AI)){
+			//System.out.println("checkwin 3");
 			return true;
 		}
 		if((board[0][2] == AI) && (board[1][1] == AI) && (board[2][0] == AI)){
+			//System.out.println("checkwin 4");
 			return true;
 		}
 		
