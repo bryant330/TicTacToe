@@ -23,7 +23,6 @@ public class PvC implements ActionListener {
 			{ 0, 3, 6 }, { 1, 4, 7 }, { 2, 5, 8 }, // vertical
 			{ 0, 4, 8 }, { 2, 4, 6 } // diagonal
 	};
-	//private JButton buttons[] = new JButton[9];
 	private JButton buttons[][] = new JButton[3][3];
 	private String letter = "";
 	private int count = 0;
@@ -94,8 +93,6 @@ public class PvC implements ActionListener {
 		else
 			AI = 0;
 		while((!checkWin(board,0))&&((!checkWin(board,1)) || (!checkDraw(board,0))) && (!checkDraw(board,1)) && (!isFull(board))){
-			
-			
 			// if computer start first
 			if (turn == AI) {
 				if(count == 0){
@@ -363,6 +360,12 @@ public class PvC implements ActionListener {
 		return false;
 	}
 	
+	public boolean checkDrawV2(int[][] board, int AI) {
+		if (isFull(board) && (!checkWin(board,AI)) && (!checkWin(board,getOpponent(AI))))
+			return true;
+		return false;
+	}
+	
 	public boolean checkDraw(int[][] board, int AI) {
 		int opp = getOpponent(AI);
 		//board length is 3
@@ -388,7 +391,7 @@ public class PvC implements ActionListener {
 			return true;
 		if(checkWin(board,0))
 			return true;
-		if((checkDraw(board,1)) && (checkDraw(board,0)))
+		if((checkDrawV2(board,1)) && (checkDrawV2(board,0)))
 			return true;
 		
 		return false;

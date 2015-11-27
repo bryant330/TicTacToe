@@ -13,18 +13,11 @@ import javax.swing.JOptionPane;
 
 public class CvC implements ActionListener {
 
-
 	// Instance Variables
 	private JFrame window = new JFrame("Tic-Tac-Toe");
-	private int[][] winCombinations = new int[][] { // 2D arrays: int[7][3]
-	{ 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, // horizontal
-			{ 0, 3, 6 }, { 1, 4, 7 }, { 2, 5, 8 }, // vertical
-			{ 0, 4, 8 }, { 2, 4, 6 } // diagonal
-	};
 	private JButton buttons[][] = new JButton[3][3];
 	private int count = 0;
 	private int choice = 0;
-	private int[][] board = new int[3][3];
 	private boolean playAgain = true;
 	
 	public CvC() {
@@ -76,7 +69,7 @@ public class CvC implements ActionListener {
 		//comp 2 start first
 		if (choice == 1) {
 			AI = 1;
-			do {
+			 while (((!checkWin(board,0)) && (!checkWin(board,1))) || ((!checkDrawV2(board,0)) && (!checkDrawV2(board,1)))){
 				if (turn == AI) {
 					System.out.println("computer 2(O)'s turn, turn is " + turn +"(1) now");
 					if(count == 0){
@@ -108,13 +101,14 @@ public class CvC implements ActionListener {
 					buttons[i][j].setEnabled(false);
 				}
 				turn = getOpponent(turn);
+				if(gameOver(board)) break;
 			
-			} while ((!checkWin(board,0))&&((!checkWin(board,1)) || (!checkDraw(board,0))) && (!checkDraw(board,1)) && (!isFull(board)));
+			}
 		}
 		//comp 1 start first
 		else {        	 
 			AI = 1;
-			do {
+			while (((!checkWin(board,0)) && (!checkWin(board,1))) || ((!checkDrawV2(board,0)) && (!checkDrawV2(board,1)))){
 				if (turn == AI) {
 					System.out.println("computer 1(X)'s turn, turn is " + turn +"(1) now");
 					if(count == 0){
@@ -146,8 +140,10 @@ public class CvC implements ActionListener {
 					buttons[i][j].setEnabled(false);
 				}
 				turn = getOpponent(turn);
-			} while ((!checkWin(board,0))&&((!checkWin(board,1)) || (!checkDraw(board,0))) && (!checkDraw(board,1)) && (!isFull(board)));
+				if(gameOver(board)) break;
+			} 
 		}
+		
 		checkWinner(board);
 	}
 
@@ -160,24 +156,12 @@ public class CvC implements ActionListener {
 	}
 	
 	
-	/*public boolean checkWin(){
-		for(int i=0; i<=7; i++){
-			if (buttons[winCombinations[i][0]].getText().equals(
-					buttons[winCombinations[i][1]].getText())
-					&& buttons[winCombinations[i][1]].getText().equals(
-							buttons[winCombinations[i][2]].getText())
-					&& buttons[winCombinations[i][0]].getText() != "")
-				return true;
-			}
-		return false;
-	}*/
-	
 	public void checkWinner(int board[][]) {
 		if (checkWin(board, 0)) {
-			JOptionPane.showMessageDialog(null, "someone WON!");
+			JOptionPane.showMessageDialog(null, "Computer 1 WON!");
 		}
 		else if (checkWin(board, 1)) {
-			JOptionPane.showMessageDialog(null, "sometwo WON!");
+			JOptionPane.showMessageDialog(null, "Computer 2 WON!");
 		}
 		else
 		JOptionPane.showMessageDialog(null, "DRAW!");
@@ -334,38 +318,21 @@ public class CvC implements ActionListener {
 		return false;
 	}
 	
-	public boolean checkDraw(int[][] board, int AI) {
-		int opp = getOpponent(AI);
-		//board length is 3
-		for (int i = 0; i < board.length; i++) {
-			if(((board[i][0]!=opp) && (board[i][1]!=opp) && (board[i][2]!=opp)) && ((board[i][0]!=opp) || (board[i][1]!=opp) || (board[i][2]!=opp))){
-				return false;
-			}
-			if(((board[0][i]!=opp) && (board[1][i]!=opp) && (board[2][i]!=opp)) && ((board[0][i]!=opp) || (board[1][i]!=opp) || (board[2][i]!=opp))){
-				return false;
-			}
-		}
-		if(((board[0][0]!=opp) && (board[1][1]!=opp) && (board[2][2]!=opp)) && ((board[0][0]!=opp) || (board[1][1]!=opp) || (board[2][2]!=opp))){
-			return false;
-		}
-		if(((board[0][2]!=opp) && (board[1][1]!=opp) && (board[2][0]!=opp)) && ((board[0][2]!=opp) || (board[1][1]!=opp) || (board[2][0]!=opp))){
-			return false;
-		}
-		return true;
+	public boolean checkDrawV2(int[][] board, int AI) {
+		if (isFull(board) && (!checkWin(board,AI)) && (!checkWin(board,getOpponent(AI))))
+			return true;
+		return false;
 	}
-	
+		
 	public boolean gameOver(int[][] board) {
 		if(checkWin(board,1))
 			return true;
 		if(checkWin(board,0))
 			return true;
-		if((checkDraw(board,1)) && (checkDraw(board,0)))
+		if((checkDrawV2(board,1)) && (checkDrawV2(board,0)))
 			return true;
 		
 		return false;
 	}
 	
-	
-
-
 }
