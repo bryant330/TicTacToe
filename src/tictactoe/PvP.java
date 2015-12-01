@@ -8,8 +8,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-//reference: http://forum.codecall.net/topic/36472-javatutorial-tic-tac-toe/
-//reference: http://forum.codecall.net/topic/43209-java-source-code-tic-tac-toe-game/
+
 public class PvP implements ActionListener{
 	
 	// Instance Variables

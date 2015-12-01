@@ -18,24 +18,18 @@ public class PvC implements ActionListener {
 
 	// Instance Variables
 	private JFrame window = new JFrame("Tic-Tac-Toe");
-	private int[][] winCombinations = new int[][] { // 2D arrays: int[7][3]
-	{ 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, // horizontal
-			{ 0, 3, 6 }, { 1, 4, 7 }, { 2, 5, 8 }, // vertical
-			{ 0, 4, 8 }, { 2, 4, 6 } // diagonal
-	};
 	private JButton buttons[][] = new JButton[3][3];
 	private String letter = "";
 	private int count = 0;
 	private int choice = 0;
-	int pos = -1;
+	private int pos = -1;
 	private boolean win = false;
-	private int buttonNum = -1;
 	private int[][] board = new int[3][3];
 	private boolean playAgain = true;
-	private boolean userSelect = false;
+	private int turn;
+	//private boolean compTurn;
 	
 	public PvC() {
-
 		// choose who to start first
 		setupOptionPane();
 		// create window
@@ -43,15 +37,6 @@ public class PvC implements ActionListener {
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setLayout(new GridLayout(3, 3));
 
-		// add buttons to window and action listeners to buttons
-		/*for (int i = 0; i <= 8; i++) {
-			buttons[i] = new JButton();
-			window.add(buttons[i]);
-			buttons[i].addActionListener(this);
-			buttons[i].setFocusable(false);
-			buttons[i].setFont(new Font(null,Font.PLAIN,100));
-		}*/
-		
 		//add buttons to window in another way
 		for(int i = 0; i < 3; i++){
 			for(int j = 0; j < 3; j++){
@@ -67,6 +52,7 @@ public class PvC implements ActionListener {
 		window.setVisible(true);
 		
 		while(playAgain){
+			board = reset();
 			gameLoop();
 			playAgain = false;
 		}
@@ -84,52 +70,58 @@ public class PvC implements ActionListener {
 		return newBoard;
 	}
 	
+	public void gameLoopV2() {
+		int AI = 1;
+		if (AI == turn) {
+			pos = minimax(board, AI);
+			int i = (pos-1)/3;
+			int j = ((pos-1) % 3);
+			board[i][j] = turn;
+			buttons[i][j].doClick();
+		}
+		else
+		{
+			System.out.println("waiting for player to choose v2");
+		}
+	}
+	
+	
 	public void gameLoop() {
-		int[][] board = reset();
-		int turn = 1;
 		int AI;
+		turn = 1;
 		if (choice == 1)
 			AI = 1;
 		else
 			AI = 0;
-		while((!checkWin(board,0))&&((!checkWin(board,1)) || (!checkDraw(board,0))) && (!checkDraw(board,1)) && (!isFull(board))){
+		//while((!checkWin(board,0))&&((!checkWin(board,1)) || (!checkDraw(board,0))) && (!checkDraw(board,1)) && (!isFull(board))){
 			// if computer start first
 			if (turn == AI) {
 				if(count == 0){
 					Random r = new Random();
 					pos = r.nextInt(9) + 1;
+					count++;
 				}
-				else
+				else{
 					pos = minimax(board, AI);
-				count++;
-				
+					count++;
+				}
 				int i = (pos-1)/3;
 				int j = ((pos-1) % 3);
 				board[i][j] = turn;
-				buttons[i][j].addActionListener(this);
-				//buttons[i][j].setText("O");
-				//buttons[i][j].setEnabled(false);
-				
+				buttons[i][j].doClick();
 			}
 			else{
 				System.out.println("waiting for player to choose");
+				count++;
 				//call actionperformed
-				//pos = buttonNum +1;
-				pos = minimax(board,turn); //take the user input
+				//pos = minimax(board,turn); //take the user input
 				//int i = (pos-1)/3;
 				//int j = ((pos-1) % 3);
 				//board[i][j] = turn;
-				//buttons[i][j].setText("X");
-				//buttons[i][j].setEnabled(false);
+				//buttons[i][j].doClick();
 			}
-			
-			turn = getOpponent(turn);
-		}
-		
-		
-			
-
-	
+			System.out.println("turn is " + turn + " now");
+		//}
 	}
 
 	public void setupOptionPane() {
@@ -140,18 +132,12 @@ public class PvC implements ActionListener {
 			
 	}
 	
-	
-	/*public boolean checkWin(){
-		for(int i=0; i<=7; i++){
-			if (buttons[winCombinations[i][0]].getText().equals(
-					buttons[winCombinations[i][1]].getText())
-					&& buttons[winCombinations[i][1]].getText().equals(
-							buttons[winCombinations[i][2]].getText())
-					&& buttons[winCombinations[i][0]].getText() != "")
-				return true;
-			}
-		return false;
-	}*/
+	public boolean getTurn(int turn){
+		if (turn == 1)  //AI's turn
+			return true; 
+		else
+			return false;
+	}
 	
 	public void checkWinner(){
 		if (win == true){
@@ -173,15 +159,28 @@ public class PvC implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent a) {
 		JButton pressedButton = (JButton) a.getSource();
-		pressedButton.setText("X");
-		pressedButton.setEnabled(false);
+		if (turn == 1){
+			pressedButton.setText("O");
+			pressedButton.setEnabled(false);
+			turn = getOpponent(turn);
+		}
+		else {
+			pressedButton.setText("X");
+			pressedButton.setEnabled(false);
+			turn = getOpponent(turn);
+		}
+		System.out.println("turn in action perform is " + turn + " now");
+		
 		for(int i = 0; i < 3; i++){
 			for(int j = 0; j < 3; j++){
 				if(a.getSource() == buttons[i][j]){
-					buttonNum = getUserInput(i,j);
+					pos = getUserInput(i,j) + 1;
+					System.out.println("This is the button number: " + pos);
 				}
 			}
 		}
+		gameLoopV2();
+		
 	}
 	
 	public boolean isFull(int[][] board) {
@@ -192,17 +191,6 @@ public class PvC implements ActionListener {
 			}
 		}
 		return true;
-	}
-	
-	public void callUserInput() {
-		System.out.println("Press any key to continue...");
-        try {
-			System.in.read();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
 	}
 	
 	public int getUserInput(int i, int j) {
