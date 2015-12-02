@@ -4,16 +4,19 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.Random;
 import java.util.Scanner;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-// reference: http://thanhcs.blogspot.my/2015/06/java-share-soure-code-game-tictactoe.html
-// reference: http://algojava.blogspot.my/2012/05/tic-tac-toe-game-swingjava.html
 public class PvC implements ActionListener {
 
 	// Instance Variables
@@ -23,6 +26,7 @@ public class PvC implements ActionListener {
 	private int pos = -1;
 	private int[][] board = new int[3][3];
 	private boolean playAgain = true;
+	private int playAgainChoice = 0;
 	private int turn;
 	
 	public PvC() {
@@ -48,12 +52,21 @@ public class PvC implements ActionListener {
 		window.setVisible(true);
 		
 		while(playAgain){
-			board = reset();
 			gameLoop();
 			playAgain = false;
 		}
 		
 		
+	}
+	
+	public void resetButton() {
+		//System.out.println("inside reset button");
+		for(int i = 0; i < 3; i++){
+			for(int j = 0; j < 3; j++){
+				buttons[i][j].setText("");
+				buttons[i][j].setEnabled(true);
+			}
+		}
 	}
 	
 	public int[][] reset(){
@@ -86,13 +99,14 @@ public class PvC implements ActionListener {
 	public void gameLoop() {
 		int AI;
 		turn = 1;
+		resetButton();
+		board = reset();
 		if (choice == 1)
 			AI = 1;
 		else
 			AI = 0;
 		// if computer start first
 			if (turn == AI) {
-				
 				Random r = new Random();
 				pos = r.nextInt(9) + 1;
 				int i = (pos-1)/3;
@@ -108,23 +122,103 @@ public class PvC implements ActionListener {
 	}
 
 	public void setupOptionPane() {
-		Object[] options = { "Player(X)", "Computer(O)" };
-		choice = JOptionPane.showOptionDialog(window, "Who will start first?",
-				"Please choose", JOptionPane.YES_NO_OPTION,
-				JOptionPane.QUESTION_MESSAGE, null, options, null); // player = 0, computer = 1
+		//Object[] options = { "Player(X)", "Computer(O)" };
+		//choice = JOptionPane.showOptionDialog(window, "Who will start first?",
+		//		"Please choose", JOptionPane.YES_NO_OPTION,
+		//		JOptionPane.QUESTION_MESSAGE, null, options, null); // player = 0, computer = 1
+		//if (choice == -1) {
 			
+		//}
+		
+		//[modify_add_start]
+		final JOptionPane optionPane = new JOptionPane("Who will start first?",JOptionPane.QUESTION_MESSAGE,JOptionPane.YES_NO_OPTION);
+		final JDialog dialog = new JDialog(window,"Please choose",true);
+		dialog.setContentPane(optionPane);
+		dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+		dialog.addWindowListener(new WindowAdapter(){
+			@Override
+			public void windowClosing(WindowEvent we) {
+				System.out.println("Can't close");
+			}
+		});
+		optionPane.addPropertyChangeListener(
+				new PropertyChangeListener(){
+
+					@Override
+					public void propertyChange(PropertyChangeEvent e) {
+						String prop = e.getPropertyName();
+						
+						if (dialog.isVisible() && (e.getSource() == optionPane)
+								&& (prop.equals(JOptionPane.VALUE_PROPERTY))) {
+							dialog.setVisible(false);
+						}
+						
+					}
+					
+				});
+		dialog.pack();
+		dialog.setVisible(true);
+		//[modify_add_finish]
+			
+	}
+	
+	public void setupPlayAgainOptionPane(String result) {
+		Object[] options = { "Yes", "No" };
+		if (result == "player"){
+			playAgainChoice = JOptionPane.showOptionDialog(window,
+					"Player WON! Play Again?", "GAME OVER",
+					JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+					options, null);
+		}
+		else if (result == "computer"){
+			playAgainChoice = JOptionPane.showOptionDialog(window,
+					"Computer WON! Play Again?", "GAME OVER",
+					JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+					options, null);
+		}
+		else
+			playAgainChoice = JOptionPane.showOptionDialog(window,
+					"Draw! Play Again?", "GAME OVER",
+					JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+					options, null);
+			
+		
 	}
 	
 	
 	public void checkWinner(int board[][]){
 		if(checkWin(board,0)) {
-			JOptionPane.showMessageDialog(null, "Player WON!(which is impossible)");
+			String result = "player";
+			setupPlayAgainOptionPane(result);
+			if(playAgainChoice == 0) {
+				playAgain = true;
+				gameLoop();
+			}
+			else
+				System.exit(0);
 		}
 		else if(checkWin(board,1)){
-			JOptionPane.showMessageDialog(null, "Computer WON!");
+			//JOptionPane.showMessageDialog(null, "Computer WON!");
+			String result = "computer";
+			setupPlayAgainOptionPane(result);
+			if(playAgainChoice == 0) {
+				playAgain = true;
+				gameLoop();
+			}
+			else
+				System.exit(0);
 		}
-		else if(isFull(board))
-			JOptionPane.showMessageDialog(null, "DRAW!");
+		else if(isFull(board)){
+			String result = "draw";
+			setupPlayAgainOptionPane(result);
+			if(playAgainChoice == 0) {
+				playAgain = true;
+				gameLoop();
+			}
+			else
+				System.exit(0);
+		
+		}
 	}
 
 	@Override
