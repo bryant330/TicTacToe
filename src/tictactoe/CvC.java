@@ -19,6 +19,7 @@ public class CvC implements ActionListener {
 	private int count = 0;
 	private int choice = 0;
 	private boolean playAgain = true;
+	private int playAgainChoice = 0;
 	
 	public CvC() {
 
@@ -26,7 +27,7 @@ public class CvC implements ActionListener {
 		setupOptionPane();
 		// create window
 		window.setSize(300, 300);
-		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		window.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		window.setLayout(new GridLayout(3, 3));
 
 		//add buttons to window in another way
@@ -66,6 +67,7 @@ public class CvC implements ActionListener {
 		int turn = 1;
 		int AI;
 		int pos = -1;
+		count = 0;
 		//comp 2 start first
 		if (choice == 1) {
 			AI = 1;
@@ -148,23 +150,73 @@ public class CvC implements ActionListener {
 	}
 
 	public void setupOptionPane() {
-		Object[] options = { "Computer 1(X)", "Computer 2(O)" };
+		Object[] options = { "Computer 1 (X)", "Computer 2 (O)" };
 		choice = JOptionPane.showOptionDialog(window, "Who will start first?",
 				"Please choose", JOptionPane.YES_NO_OPTION,
 				JOptionPane.QUESTION_MESSAGE, null, options, null); // computer 1 -> 0, computer 2 -> 1
-			
+		if (choice == -1) {
+			JOptionPane.showMessageDialog(window,
+				    "YOU HAVE TO CHOOSE WHO TO START FIRST! :)",
+				    "PLEASE CHOOSE",
+				    JOptionPane.WARNING_MESSAGE);
+			setupOptionPane();
+		}	
 	}
 	
 	
 	public void checkWinner(int board[][]) {
 		if (checkWin(board, 0)) {
-			JOptionPane.showMessageDialog(null, "Computer 1 WON!");
+			String result = "computer 1";
+			setupPlayAgainOptionPane(result);
+			if(playAgainChoice == 0) {
+				playAgain = true;
+				gameLoop();
+			}
+			else
+				this.window.dispose();
 		}
 		else if (checkWin(board, 1)) {
-			JOptionPane.showMessageDialog(null, "Computer 2 WON!");
+			String result = "computer 2";
+			setupPlayAgainOptionPane(result);
+			if(playAgainChoice == 0) {
+				playAgain = true;
+				gameLoop();
+			}
+			else
+				this.window.dispose();
+		}
+		else{
+			String result = "draw";
+			setupPlayAgainOptionPane(result);
+			if(playAgainChoice == 0) {
+				playAgain = true;
+				gameLoop();
+			}
+			else
+				this.window.dispose();
+		}
+		
+	}
+	
+	public void setupPlayAgainOptionPane(String result) {
+		Object[] options = { "Yes", "No" };
+		if (result == "computer 1"){
+			playAgainChoice = JOptionPane.showOptionDialog(window,
+					"Computer 1 WON! Play Again?", "GAME OVER",
+					JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+					options, null);
+		}
+		else if (result == "computer 2"){
+			playAgainChoice = JOptionPane.showOptionDialog(window,
+					"Computer 2 WON! Play Again?", "GAME OVER",
+					JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+					options, null);
 		}
 		else
-		JOptionPane.showMessageDialog(null, "DRAW!");
+			playAgainChoice = JOptionPane.showOptionDialog(window,
+					"Draw! Play Again?", "GAME OVER",
+					JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+					options, null);
 	}
 
 	@Override

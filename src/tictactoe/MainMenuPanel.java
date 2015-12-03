@@ -17,8 +17,8 @@ public class MainMenuPanel extends JFrame implements ActionListener{
 	
 	public MainMenuPanel(){
 		this.setLayout(new GridLayout(5,1));
-		this.setTitle("Tic-Tac-Toe");
-		label = new JLabel("Please select:");
+		this.setTitle("Tic-Tac-Toe by minhou");
+		label = new JLabel("Please select game mode:");
 		this.add(label);
 		btn1 = new JButton("Player vs Player");
 		btn2 = new JButton("Player vs Computer");

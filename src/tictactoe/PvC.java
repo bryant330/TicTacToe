@@ -34,7 +34,7 @@ public class PvC implements ActionListener {
 		setupOptionPane();
 		// create window
 		window.setSize(300, 300);
-		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		window.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		window.setLayout(new GridLayout(3, 3));
 
 		//add buttons to window in another way
@@ -92,7 +92,7 @@ public class PvC implements ActionListener {
 		else
 		{
 			System.out.println("waiting for player to choose v2");
-		}		
+		}
 	}
 	
 	
@@ -122,44 +122,17 @@ public class PvC implements ActionListener {
 	}
 
 	public void setupOptionPane() {
-		//Object[] options = { "Player(X)", "Computer(O)" };
-		//choice = JOptionPane.showOptionDialog(window, "Who will start first?",
-		//		"Please choose", JOptionPane.YES_NO_OPTION,
-		//		JOptionPane.QUESTION_MESSAGE, null, options, null); // player = 0, computer = 1
-		//if (choice == -1) {
-			
-		//}
-		
-		//[modify_add_start]
-		final JOptionPane optionPane = new JOptionPane("Who will start first?",JOptionPane.QUESTION_MESSAGE,JOptionPane.YES_NO_OPTION);
-		final JDialog dialog = new JDialog(window,"Please choose",true);
-		dialog.setContentPane(optionPane);
-		dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-		dialog.addWindowListener(new WindowAdapter(){
-			@Override
-			public void windowClosing(WindowEvent we) {
-				System.out.println("Can't close");
-			}
-		});
-		optionPane.addPropertyChangeListener(
-				new PropertyChangeListener(){
-
-					@Override
-					public void propertyChange(PropertyChangeEvent e) {
-						String prop = e.getPropertyName();
-						
-						if (dialog.isVisible() && (e.getSource() == optionPane)
-								&& (prop.equals(JOptionPane.VALUE_PROPERTY))) {
-							dialog.setVisible(false);
-						}
-						
-					}
-					
-				});
-		dialog.pack();
-		dialog.setVisible(true);
-		//[modify_add_finish]
-			
+		Object[] options = { "Player (X)", "Computer (O)" };
+		choice = JOptionPane.showOptionDialog(window, "Who will start first?",
+				"Please choose", JOptionPane.YES_NO_OPTION,
+				JOptionPane.QUESTION_MESSAGE, null, options, null); // player = 0, computer = 1
+		if (choice == -1) {
+			JOptionPane.showMessageDialog(window,
+				    "YOU HAVE TO CHOOSE WHO TO START FIRST! :)",
+				    "PLEASE CHOOSE",
+				    JOptionPane.WARNING_MESSAGE);
+			setupOptionPane();
+		}	
 	}
 	
 	public void setupPlayAgainOptionPane(String result) {
@@ -181,8 +154,6 @@ public class PvC implements ActionListener {
 					"Draw! Play Again?", "GAME OVER",
 					JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
 					options, null);
-			
-		
 	}
 	
 	
@@ -195,10 +166,9 @@ public class PvC implements ActionListener {
 				gameLoop();
 			}
 			else
-				System.exit(0);
+				this.window.dispose();
 		}
 		else if(checkWin(board,1)){
-			//JOptionPane.showMessageDialog(null, "Computer WON!");
 			String result = "computer";
 			setupPlayAgainOptionPane(result);
 			if(playAgainChoice == 0) {
@@ -206,7 +176,7 @@ public class PvC implements ActionListener {
 				gameLoop();
 			}
 			else
-				System.exit(0);
+				this.window.dispose();
 		}
 		else if(isFull(board)){
 			String result = "draw";
@@ -216,7 +186,7 @@ public class PvC implements ActionListener {
 				gameLoop();
 			}
 			else
-				System.exit(0);
+				this.window.dispose();
 		
 		}
 	}

@@ -24,6 +24,7 @@ public class PvP implements ActionListener{
 	private int count = 0;
 	private int choice = 0;
 	private boolean win = false;
+	private int playAgainChoice = 0;
 	
 	public static void main(String[] args){
 		new MainMenuPanel();
@@ -35,7 +36,14 @@ public class PvP implements ActionListener{
 				"Who will start first?", "Please choose",
 				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
 				options, null); //player1 = 0, player2 = 1
-		System.out.println(choice);
+		if (choice == -1) {
+			JOptionPane.showMessageDialog(window,
+				    "YOU HAVE TO CHOOSE WHO TO START FIRST! :)",
+				    "PLEASE CHOOSE",
+				    JOptionPane.WARNING_MESSAGE);
+			setupOptionPane();
+		
+		}
 	}
 	
 	public PvP(){
@@ -43,7 +51,7 @@ public class PvP implements ActionListener{
 		setupOptionPane();
 		//create window
 		window.setSize(300, 300);
-		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		window.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		window.setLayout(new GridLayout(3,3));
 		
 		//add buttons to window and action listeners to buttons
@@ -93,15 +101,60 @@ public class PvP implements ActionListener{
 				player = "Player 1";
 			else if (letter == "O")
 				player = "Player 2";
-			JOptionPane.showMessageDialog(null, player + " WON!");
-			System.exit(0);
+			setupPlayAgainOptionPane(player);
+			//JOptionPane.showMessageDialog(null, player + " WON!");
+			//System.exit(0);
 		}
 		else if (count == 9 && win == false){
-			JOptionPane.showMessageDialog(null, "DRAW!");
-			System.exit(0);
+			String result = "draw";
+			setupPlayAgainOptionPane(result);
+			//JOptionPane.showMessageDialog(null, "DRAW!");
+			//System.exit(0);
 		}
 	}
 	
+	public void setupPlayAgainOptionPane(String result) {
+		Object[] options = { "Yes", "No" };
+		if (result == "Player 1") {
+			playAgainChoice = JOptionPane.showOptionDialog(window,
+					"Player 1 WON! Play Again?", "GAME OVER",
+					JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+					options, null);
+			if (playAgainChoice == 0)
+				restartGame();
+			else
+				this.window.dispose();
+		}
+		else if (result == "Player 2") {
+			playAgainChoice = JOptionPane.showOptionDialog(window,
+					"Player 2 WON! Play Again?", "GAME OVER",
+					JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+					options, null);
+			if (playAgainChoice == 0)
+				restartGame();
+			else
+				this.window.dispose();
+		}
+		else {
+			playAgainChoice = JOptionPane.showOptionDialog(window,
+					"DRAW! Play Again?", "GAME OVER",
+					JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+					options, null);
+			if (playAgainChoice == 0)
+				restartGame();
+			else
+				this.window.dispose();
+		}
+	}
+	
+	public void restartGame() {
+		win = false;
+		count = 0;
+		for(int i = 0; i <= 8; i++){
+			buttons[i].setText("");
+			buttons[i].setEnabled(true);
+		}
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent a) {
