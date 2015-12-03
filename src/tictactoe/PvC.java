@@ -33,7 +33,7 @@ public class PvC implements ActionListener {
 		// choose who to start first
 		setupOptionPane();
 		// create window
-		window.setSize(300, 300);
+		window.setSize(500, 500);
 		window.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		window.setLayout(new GridLayout(3, 3));
 
@@ -94,7 +94,6 @@ public class PvC implements ActionListener {
 			System.out.println("waiting for player to choose v2");
 		}
 	}
-	
 	
 	public void gameLoop() {
 		int AI;
@@ -165,8 +164,10 @@ public class PvC implements ActionListener {
 				playAgain = true;
 				gameLoop();
 			}
-			else
+			else{
 				this.window.dispose();
+				gameLoop();
+			}
 		}
 		else if(checkWin(board,1)){
 			String result = "computer";
@@ -175,8 +176,10 @@ public class PvC implements ActionListener {
 				playAgain = true;
 				gameLoop();
 			}
-			else
+			else{
 				this.window.dispose();
+				gameLoop();
+			}
 		}
 		else if(isFull(board)){
 			String result = "draw";
@@ -185,9 +188,10 @@ public class PvC implements ActionListener {
 				playAgain = true;
 				gameLoop();
 			}
-			else
+			else{
 				this.window.dispose();
-		
+				gameLoop();
+			}
 		}
 	}
 

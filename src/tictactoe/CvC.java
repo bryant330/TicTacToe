@@ -26,7 +26,7 @@ public class CvC implements ActionListener {
 		// choose who to start first
 		setupOptionPane();
 		// create window
-		window.setSize(300, 300);
+		window.setSize(500, 500);
 		window.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		window.setLayout(new GridLayout(3, 3));
 
